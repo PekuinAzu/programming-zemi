@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+    has_many :tweets, dependent: :destroy
  #データを保存する前にメアドを小文字にする。
 before_save { email.downcase! }
  #nameは必ず存在する。50文字以内
