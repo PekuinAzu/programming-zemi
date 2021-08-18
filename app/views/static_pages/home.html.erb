@@ -29,7 +29,7 @@
     </aside>
 
     <div class="col-md-8">
-    <% if @tweets.any? %>
+    <% if @tweets && @tweets.any? %>
         <%= will_paginate @tweets %>
         <ol class="tweets">
              <% @tweets.each do |tweet| %>

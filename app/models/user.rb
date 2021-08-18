@@ -1,5 +1,9 @@
 class User < ApplicationRecord
-    has_many :tweets, dependent: :destroy
+    has_many :tweets,dependent: :destroy
+    has_many :follower, class_name: "Relationship", foreign_key: "follower_id",dependent: :destroy
+    has_many :followed, class_name: "Relationship", foreign_key: "followed_id",dependent: :destroy
+    has_many :following_user, through: :follower, source: :followed
+    has_many :follower_user, through: :followed, source: :follower
  #データを保存する前にメアドを小文字にする。
 before_save { email.downcase! }
  #nameは必ず存在する。50文字以内
@@ -11,5 +15,20 @@ validates :email, presence: true, length: { maximum: 255 },
                   uniqueness: { case_sensitive: false }
 has_secure_password
 validates :password, presence: true, length: { minimum: 6 }, allow_nil: true          
+
+   #ユーザーをフォローする
+   def follow(user_id)
+    follower.create(followed_id: user_id)
+   end
+
+   #ユーザーのフォローをはずす
+   def unfollow(user_id)
+    follower.find_by(followed_id: user_id).destroy
+   end
+
+   #フォロー確認を行う
+   def following?(user)
+    following_user.include?(user)
+   end
 end
 
